@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">list</string>
+    <string-array name="ctype">
+        <item>全部</item>
+        <item>电影</item>
+        <item>图书</item>
+        <item>游戏</item>
+    </string-array>
 </resources>
