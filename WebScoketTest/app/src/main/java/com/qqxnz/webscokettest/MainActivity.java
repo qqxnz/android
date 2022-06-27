@@ -3,6 +3,7 @@ package com.qqxnz.webscokettest;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -10,7 +11,7 @@ import android.widget.TextView;
 
 import java.net.URI;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements NetStateChangeObserver {
     TextView stateTextView;
     Button connectButton;
     EditText editText;
@@ -22,6 +23,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        
+        NetworkChangeReceiver.registerReceiver(this);
+        // 注册
+        NetworkChangeReceiver.registerObserver(this);
 
         stateTextView = findViewById(R.id.status);
         connectButton = findViewById(R.id.connect);
@@ -41,7 +47,11 @@ public class MainActivity extends AppCompatActivity {
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                client.send(editText.getText().toString());
+//                for (int i = 0; i <50 ; i++) {
+                    Log.e("MZDWebSocketClient", "sendMessage" );
+                    client.send(editText.getText().toString());
+//                }
+//                client.sendPing();
             }
         });
 
@@ -54,10 +64,17 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+//解除注册
+        NetworkChangeReceiver.unRegisterReceiver(this);
+    }
 
     void  createClient(){
         //"ws://172.16.5.151:3000"
-        URI uri = URI.create("ws://172.16.5.151:3000");
+        URI uri = URI.create("ws://106.75.24.200:7777/ws");
 
         client = new MZDWebSocketClient(uri, new MZDWebSocketClientListener() {
             @Override
@@ -74,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
             public void onMessage(String message) {
                 MainActivity.this.runOnUiThread(new Runnable() {
                     public void run() {
-                        messageTextView.setText("收到消息:"+message);
+                        messageTextView.setText(messageTextView.getText().toString() + "\n"+ message);
                     }
                 });
             }
@@ -100,4 +117,19 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
+    @Override
+    public void onDisconnect() {
+        Log.d("NetworkChange","onDisconnect");
+    }
+
+    @Override
+    public void onMobileConnect() {
+        Log.d("NetworkChange","onMobileConnect");
+    }
+
+    @Override
+    public void onWifiConnect() {
+        Log.d("NetworkChange","onWifiConnect");
+    }
 }
