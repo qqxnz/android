@@ -19,31 +19,28 @@ public class MZDWebSocketClient extends WebSocketClient {
 
     @Override
     public void onOpen(ServerHandshake handshakedata) {
-        Log.e("MZDWebSocketClient", "onOpen()");
         this.listener.onOpen();
     }
 
     @Override
     public void onMessage(String message) {
-        Log.e("MZDWebSocketClient", "onMessage()" + message);
         this.listener.onMessage(message);
     }
 
     @Override
     public void onClose(int code, String reason, boolean remote) {
-        Log.e("MZDWebSocketClient", "onClose()");
         this.listener.onClose(code,reason,remote);
     }
 
     @Override
     public void onError(Exception ex) {
-        Log.e("MZDWebSocketClient", "onError()" + ex.getMessage());
         this.listener.onError(ex);
     }
 
     @Override
     public void onWebsocketPing(WebSocket conn, Framedata f) {
         super.onWebsocketPing(conn, f);
+        Log.d("MZDWebSocketClient","onWebsocketPing");
 //        // 如果对方发了一个Ping过来，我立刻返回一个Pong消息
 //        FramedataImpl1 resp = new FramedataImpl1(f);
 //        resp.setOptcode(Framedata.Opcode.PONG);
@@ -53,7 +50,7 @@ public class MZDWebSocketClient extends WebSocketClient {
     @Override
     public void onWebsocketPong(WebSocket conn, Framedata f) {
         super.onWebsocketPong(conn, f);
-        Log.e("MZDWebSocketClient", "onWebsocketPong" + f);
+        Log.d("MZDWebSocketClient","onWebsocketPong");
     }
 }
 
